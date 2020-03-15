@@ -121,4 +121,9 @@ class Container implements Iterator, ArrayAccess
     {
         return reset($this->_values);
     }
+
+    function __get($name)
+    {
+        return $this->__data[$name] ?? null;
+    }
 }
