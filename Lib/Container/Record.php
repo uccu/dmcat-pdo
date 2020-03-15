@@ -51,6 +51,8 @@ class Record
         }
         if (isset($this->$key)) {
             $this->_setData[$this->$key] = $value;
+        } else {
+            $this->$key = $value;
         }
     }
 
