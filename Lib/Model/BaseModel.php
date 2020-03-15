@@ -94,12 +94,10 @@ class BaseModel implements Model
 
     public static function clone(...$params)
     {
-        $type = $params[0] ?? null;
-
         static $object;
-        if (empty($object) || !isset($object[$type])) {
-            $object[$type] = new static(...$params);
+        if (empty($object) || !isset($object[static::class])) {
+            $object[static::class] = new static(...$params);
         }
-        return clone $object[$type];
+        return clone $object[static::class];
     }
 }
