@@ -25,6 +25,7 @@ class Field
                 if (isset($model->joinModels[$field])) {
                     $model = $model->joinModels[$field];
                 } elseif (method_exists($model, $field)) {
+                    $model->_export = $field;
                     $model = $model->joinModels[$field] = $model->$field();
                 } else {
                     throw new NoJoinModelException;
@@ -36,10 +37,15 @@ class Field
         $table = $model->table;
         $this->fieldName = $asField ?? $fieldName;
         $this->realFieldName = $fieldName;
-        $this->fullFieldName = $table->tableName . '.' . $this->realFieldName;
+        if ($model->hasField($this->realFieldName)) {
+            $this->fullFieldName = '`' . $table->tableName . '`.`' . $this->realFieldName . '`';
+        } else {
+            $this->fullFieldName = '`' . $table->tableName . '`.' . $this->realFieldName;
+        }
+
         $this->fullFieldSql = $this->fullFieldName;
         if ($asField) {
-            $this->fullFieldSql .= ' ' . $asField;
+            $this->fullFieldSql .= ' `' . $asField . '`';
         }
     }
 

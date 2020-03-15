@@ -15,7 +15,7 @@ trait LogicModel
             $this->condition .= ($this->condition ? ' AND (' : '') . DB::format($sql, $container, $this) . ($this->condition ? ' )' : '');
         } elseif (is_array($sql) || is_object($sql)) {
             foreach ($sql as $k => $v) {
-                if (is_array($v)) call_user_func_array(array($this, 'condition'), $v);
+                if (is_array($v)) call_user_func_array(array($this, 'where'), $v);
                 elseif (is_string($v) || is_float($v) || is_int($v)) call_user_func_array(array($this, 'where'), array('%F = %n', $k, $v));
                 elseif (is_null($v)) call_user_func_array(array($this, 'where'), array('%F IS NULL', $k));
             }

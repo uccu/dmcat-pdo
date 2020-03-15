@@ -36,10 +36,10 @@ trait StaticModel
         $this->importJoin();
         $sql = 'INSERT INTO ';
         if ($replace) $sql = 'REPLACE INTO ';
-        $sql .= $this->table->fullTableSql;
+        $sql .= $this->table->fullTableName;
 
         if (!$this->set) throw new NoSetException;
-        $sql .= ' SET ' . $this->condition;
+        $sql .= ' SET ' . preg_replace('#`\w+`\.#', '', $this->set);
 
         $this->sql = $sql;
         return new Container($this);
@@ -54,7 +54,8 @@ trait StaticModel
         if (!$this->set) throw new NoSetException;
         $sql .= ' SET ' . $this->set;
 
-        if ($id) {
+        $container = func_get_args();
+        if (count($container)) {
             $this->condition = '';
             $this->where([$this->primary => $id]);
             $sql .= ' WHERE ' . $this->condition;
@@ -79,7 +80,7 @@ trait StaticModel
         if (!$this->condition) {
             throw new NoConditionException;
         }
-        $sql .= ' WHERE ' . $this->condition;
+        $sql .= ' WHERE ' . preg_replace('#`\w+`\.#', '', $this->condition);
 
         $this->sql = $sql;
         return new Container($this);
@@ -88,7 +89,8 @@ trait StaticModel
     public function find($id = null)
     {
         $this->limit(1);
-        if ($id) {
+        $container = func_get_args();
+        if (count($container)) {
             $this->condition = '';
             $this->where([$this->primary => $id]);
         }
@@ -109,7 +111,7 @@ trait StaticModel
     {
         $this->select = '';
         $container = $this->select($field, $key)->get($key);
-        foreach ($container as $k=>$v) {
+        foreach ($container as $k => $v) {
             $container[$k] = $v->$field;
         }
         return $container;

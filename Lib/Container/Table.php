@@ -18,12 +18,12 @@ class Table
         if (!$database) $database = ModelConfig::$configs->database;
         $this->tableName = $asTable ?? $tableName;
         $this->realTableName = $prefix . $tableName;
-        $this->fullTableName = $database . '.' . $this->realTableName;
+        $this->fullTableName = '`' . $database . '`.`' . $this->realTableName . '`';
         $this->fullTableSql = $this->fullTableName;
         if ($asTable) {
-            $this->fullTableSql .= ' ' . $asTable;
-        } elseif($this->tableName != $this->realTableName) {
-            $this->fullTableSql .= ' ' . $this->tableName;
+            $this->fullTableSql .= ' `' . $asTable . '`';
+        } elseif ($this->tableName != $this->realTableName) {
+            $this->fullTableSql .= ' `' . $this->tableName . '`';
         }
     }
 

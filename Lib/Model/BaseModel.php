@@ -25,19 +25,18 @@ class BaseModel implements Model
     private     $select;
     private     $set;
 
+    public      $_export;
     private     $on;
     public      $joinModels = [];
     public      $outSql = false;
 
     public function __construct(...$table)
     {
-        if (!$table) {
-            $table[] = $this->table;
-        }
-        if ($table[0] instanceof Table) {
+
+        if (isset($table[0]) &&  $table[0] instanceof Table) {
             $this->table = $table[0];
         } else {
-            $this->table = new Table(...$table);
+            $this->table = new Table($this->table, ...$table);
         }
         $this->_COLUMNS();
         if (!$this->primary) $this->primary = $this->field[0];
@@ -80,7 +79,8 @@ class BaseModel implements Model
     }
     protected function join($class, $forign = null, $key = null, $join = 'INNER')
     {
-        $c = $class::clone();
+
+        $c = $class::clone($this->_export);
         if (!$forign) $forign = $c->primary;
         if (!$key) $key = $c->table->tableName . '_id';
         $c->_link = [
@@ -94,10 +94,22 @@ class BaseModel implements Model
 
     public static function clone(...$params)
     {
-        static $object;
-        if (empty($object) || !isset($object[static::class])) {
-            $object[static::class] = new static(...$params);
-        }
-        return clone $object[static::class];
+        return new static(...$params);
+    }
+
+    public function clean()
+    {
+        $this->fields = null;
+        $this->offset = null;
+        $this->limit = null;
+        $this->order = null;
+        $this->condition = null;
+        $this->group = null;
+        $this->select = null;
+        $this->set = null;
+        $this->on = null;
+        $this->joinModels = [];
+        $this->outSql = false;
+        return $this;
     }
 }
