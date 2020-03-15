@@ -18,6 +18,7 @@ class Container implements Iterator, ArrayAccess
     function __construct($model, $key = null)
     {
 
+        $model->clean();
         if ($model->outSql) {
             $this->sql = $model->sql;
             return;

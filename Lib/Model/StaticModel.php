@@ -71,9 +71,10 @@ trait StaticModel
     {
         $this->importJoin();
         $sql = 'DELETE FROM ';
-        $sql .= $this->table->fullTableSql;
+        $sql .= $this->table->fullTableName;
 
-        if ($id) {
+        $container = func_get_args();
+        if (count($container)) {
             $this->condition = '';
             $this->where([$this->primary => $id]);
         }
