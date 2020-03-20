@@ -60,7 +60,7 @@ class BaseModel implements Model
 
     public function hasField($field)
     {
-        return $field == '*' || in_array($field, $this->field) ? true : false;
+        return in_array($field, $this->field) ? true : false;
     }
 
     public function importJoin()
