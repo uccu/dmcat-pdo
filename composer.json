@@ -1,23 +1,21 @@
 {
     "name": "uccu/dmcat-pdo",
     "description": "pdo-mysql for PHP",
-    "keywords": ["dmcat","pdo","pzcat"],
+    "keywords": ["dmcat", "pdo", "pzcat"],
     "homepage": "https://github.com/uccu/dmcat-pdo",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "pzcat",
-            "email": "cat@4moe.com"
-        }
-    ],
+    "authors": [{
+        "name": "pzcat",
+        "email": "cat@4moe.com"
+    }],
     "require": {
-        "php": ">=7.2.0"
+        "php": ">=7.0"
     },
     "autoload": {
-		"psr-4": {
+        "psr-4": {
             "Uccu\\DmcatPdo\\": "Lib"
-		}
-	},
+        }
+    },
     "repositories": {
         "packagist": {
             "type": "composer",
