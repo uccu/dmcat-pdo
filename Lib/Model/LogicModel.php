@@ -45,6 +45,7 @@ trait LogicModel
         }
 
         $orders = [];
+        if (is_array($container[0])) $container = $container[0];
         foreach ($container as $k => $field) {
 
             if (is_numeric($k)) {
