@@ -23,13 +23,13 @@ class DB
         $config = ModelConfig::config(ModelConfig::$name);
         self::$pdos[ModelConfig::$name] = new PdoMysql(
             [
-                'host' => $config->HOST,
-                'user' => $config->USER,
-                'password' => $config->PASSWORD,
-                'database' => $config->DATABASE,
-                'port' => $config->PORT,
-                'charset' => $config->CHARSET,
-                'unix_socket' => $config->UNIX_SOCKET,
+                'host' => $config->HOST ?? null,
+                'user' => $config->USER ?? null,
+                'password' => $config->PASSWORD ?? null,
+                'database' => $config->DATABASE ?? null,
+                'port' => $config->PORT ?? null,
+                'charset' => $config->CHARSET ?? null,
+                'unix_socket' => $config->UNIX_SOCKET ?? null,
             ],
             [
                 PDO::ATTR_PERSISTENT    => $config->ATTR_PERSISTENT ?? false,
@@ -43,6 +43,11 @@ class DB
         return self::$pdos[ModelConfig::$name];
     }
 
+    static function config($name = null)
+    {
+        self::initConfig();
+        return ModelConfig::config($name);
+    }
 
     public static function initConfig()
     {
@@ -70,6 +75,7 @@ class DB
 
     public static function rawQuery($sql, $arr = [])
     {
+        self::initConfig();
         return self::getPdo()->query($sql, $arr);
     }
     public static function fetchAll()
@@ -79,6 +85,7 @@ class DB
 
     public static function start()
     {
+        self::initConfig();
         return self::getPdo()->start();
     }
     public static function commit()
@@ -91,6 +98,7 @@ class DB
     }
     public static function inTransaction()
     {
+        self::initConfig();
         return self::getPdo()->inTransaction();
     }
 
@@ -109,6 +117,7 @@ class DB
 
     public static function quote($name, $type = PDO::PARAM_STR)
     {
+        self::initConfig();
         return self::getPdo()->quote($name, $type);
     }
 

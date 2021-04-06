@@ -52,7 +52,7 @@ foreach ($argv as $v) {
 }
 
 DB::switchConfig();
-$db = ModelConfig::config()->DATABASE;
+$db = DB::config()->DATABASE;
 DB::rawQuery('select table_name name from information_schema.tables where table_schema=?', [$db]);
 $all = DB::fetchAll();
 
