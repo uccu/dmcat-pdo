@@ -2,15 +2,14 @@
 
 namespace Uccu\DmcatPdo;
 
-use ErrorException;
-use Exception;
+use Uccu\DmcatPdo\Exception\StreamOpenFailException;
 
 class ModelConfig
 {
 
     static public $_CONFIG_ROOT = __DIR__;
-    static public $configs = [];
-    static private $_DATA = [];
+    static public $configs;
+    static private $_DATA;
     static public $name;
 
 
@@ -27,7 +26,7 @@ class ModelConfig
         $path = self::$_CONFIG_ROOT . $fileName . '.json';
         $file = @file_get_contents($path);
         if (!$file) {
-            throw new Exception('failed to open stream');
+            throw new StreamOpenFailException;
         }
 
         self::$_DATA = json_decode($file);

@@ -4,6 +4,8 @@ namespace Uccu\DmcatPdo;
 
 use Exception;
 use PDO;
+use Uccu\DmcatPdo\Exception\ExcuteFailException;
+use Uccu\DmcatPdo\Exception\MysqlConnectException;
 
 class PdoMysql
 {
@@ -54,7 +56,7 @@ class PdoMysql
                     $this->attr
                 );
             } catch (Exception $e) {
-                throw new Exception('mysql connect err');
+                throw new MysqlConnectException;
             }
 
             return $this->connection;
@@ -72,7 +74,7 @@ class PdoMysql
         try {
             $result = $this->results->execute($arr);
         } catch (Exception $e) {
-            $ex  = new Exception('execute err');
+            $ex  = new ExcuteFailException;
             $ex->sql = $sql;
             throw $ex;
         }
