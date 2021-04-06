@@ -6,8 +6,8 @@ use Exception;
 
 class StreamOpenFailException extends Exception
 {
-    function __construct()
+    function __construct($detail)
     {
-        parent::__construct('stream open failed');
+        parent::__construct('stream open failed:' . $detail);
     }
 }

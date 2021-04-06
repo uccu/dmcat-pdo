@@ -9,20 +9,27 @@ use Uccu\DmcatPdo\Exception\ArgsCountException;
 class DB
 {
 
-    public static $pdo;
+    public static $pdos = [];
+    private static $initConfig = false;
 
-    public static function init($name = null, $root = null)
+    public static function getPdo()
     {
-        $root && ModelConfig::$_CONFIG_ROOT = $root;
-        ModelConfig::init($name);
 
-        $config = ModelConfig::$configs;
-        self::$pdo = new PdoMysql(
+        self::initConfig();
+        if (isset(self::$pdos[ModelConfig::$name])) {
+            return self::$pdos[ModelConfig::$name];
+        }
+
+        $config = ModelConfig::config(ModelConfig::$name);
+        self::$pdos[ModelConfig::$name] = new PdoMysql(
             [
                 'host' => $config->HOST,
                 'user' => $config->USER,
                 'password' => $config->PASSWORD,
-                'database' => $config->DATABASE
+                'database' => $config->DATABASE,
+                'port' => $config->PORT,
+                'charset' => $config->CHARSET,
+                'unix_socket' => $config->UNIX_SOCKET,
             ],
             [
                 PDO::ATTR_PERSISTENT    => $config->ATTR_PERSISTENT ?? false,
@@ -32,6 +39,23 @@ class DB
                 PDO::ATTR_CASE          => $config->ATTR_CASE ?? 0,
             ]
         );
+
+        return self::$pdos[ModelConfig::$name];
+    }
+
+
+    public static function initConfig()
+    {
+        if (!self::$initConfig) {
+            ModelConfig::init();
+            self::$initConfig = true;
+        }
+    }
+
+    public static function switchConfig($name = null)
+    {
+        self::initConfig();
+        ModelConfig::switchConfig($name);
     }
 
     public static function setConfigRoot($root)
@@ -39,48 +63,53 @@ class DB
         ModelConfig::$_CONFIG_ROOT = $root;
     }
 
+    public static function setConfigFile($file)
+    {
+        ModelConfig::$_CONFIG_FILE = $file;
+    }
+
     public static function rawQuery($sql, $arr = [])
     {
-        return self::$pdo->query($sql, $arr);
+        return self::getPdo()->query($sql, $arr);
     }
     public static function fetchAll()
     {
-        return self::$pdo->fetchAll();
+        return self::getPdo()->fetchAll();
     }
 
     public static function start()
     {
-        return self::$pdo->start();
+        return self::getPdo()->start();
     }
     public static function commit()
     {
-        return self::$pdo->commit();
+        return self::getPdo()->commit();
     }
     public static function rollback()
     {
-        return self::$pdo->rollBack();
+        return self::getPdo()->rollBack();
     }
     public static function inTransaction()
     {
-        return self::$pdo->inTransaction();
+        return self::getPdo()->inTransaction();
     }
 
     public static function lastInsertId($name = NULL)
     {
-        return self::$pdo->lastInsertId($name);
+        return self::getPdo()->lastInsertId($name);
     }
     public static function affectedRowCount()
     {
-        return self::$pdo->affectedRowCount();
+        return self::getPdo()->affectedRowCount();
     }
     public static function freeResult()
     {
-        return self::$pdo->freeResult();
+        return self::getPdo()->freeResult();
     }
 
     public static function quote($name, $type = PDO::PARAM_STR)
     {
-        return self::$pdo->quote($name, $type);
+        return self::getPdo()->quote($name, $type);
     }
 
     public static function raw($sql)

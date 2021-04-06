@@ -74,9 +74,7 @@ class PdoMysql
         try {
             $result = $this->results->execute($arr);
         } catch (Exception $e) {
-            $ex  = new ExcuteFailException;
-            $ex->sql = $sql;
-            throw $ex;
+            throw new ExcuteFailException($sql, $arr);
         }
 
         return $result;

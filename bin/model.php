@@ -21,6 +21,8 @@ $config = [
 
     '--dir' => 'dir',
     '-d' => 'dir',
+
+    'update' => 'update',
 ];
 
 
@@ -28,9 +30,10 @@ $base = [
     'namespace' => null,
     'config' => __DIR__ . '/',
     'dir' => __DIR__,
+    'update' => null,
 ];
 
-
+$onlyTable = null;
 $method = null;
 foreach ($argv as $v) {
 
@@ -41,13 +44,15 @@ foreach ($argv as $v) {
     }
 
     if (isset($config[$v])) {
+        if ($method) {
+            die('no ' . $method);
+        }
         $method = $config[$v];
     }
 }
 
-DB::init("master", $base['config'] . '/');
-
-$db = ModelConfig::$configs->database;
+DB::switchConfig();
+$db = ModelConfig::config()->DATABASE;
 DB::rawQuery('select table_name name from information_schema.tables where table_schema=?', [$db]);
 $all = DB::fetchAll();
 
@@ -65,6 +70,12 @@ foreach ($all as $v) {
 
     foreach ($nameArr as $v) {
         $className .= ucfirst($v);
+    }
+
+    if ($base['update']) {
+        if ($name != $base['update'] || $fullName != $base['update'] || $className != $base['update']) {
+            continue;
+        }
     }
 
     DB::rawQuery('SHOW FULL COLUMNS FROM ' . $fullName);
