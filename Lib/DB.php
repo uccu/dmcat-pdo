@@ -19,10 +19,10 @@ class DB
         $config = ModelConfig::$configs;
         self::$pdo = new PdoMysql(
             [
-                'host' => $config->host,
-                'user' => $config->user,
-                'password' => $config->password,
-                'database' => $config->database
+                'host' => $config->HOST,
+                'user' => $config->USER,
+                'password' => $config->PASSWORD,
+                'database' => $config->DATABASE
             ],
             [
                 PDO::ATTR_PERSISTENT    => $config->ATTR_PERSISTENT ?? false,
@@ -93,7 +93,7 @@ class DB
 
         $sql = preg_replace_callback('#([ =\-,\+\(]|^)([a-z\*][a-zA-Z0-9_\.]*)#', function ($m) use ($model, $checkField) {
             if (substr_count($m[2], '.') == 0 && $checkField && !$model->hasField($m[2])) return $m[0];
-            return $m[1].new Field($m[2], $model);
+            return $m[1] . new Field($m[2], $model);
         }, $hql);
         $count = substr_count($sql, '%');
 

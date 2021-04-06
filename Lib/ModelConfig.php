@@ -27,7 +27,7 @@ class ModelConfig
         $file = @file_get_contents(self::$_CONFIG_ROOT . $fileName . '.json');
         if (!$file) {
             try {
-                $file = json_encode(require_once(self::$_CONFIG_ROOT . $fileName . '.php'));
+                $file = json_encode(require(self::$_CONFIG_ROOT . $fileName . '.php'));
             } catch (Exception $e) {
                 throw new StreamOpenFailException;
             }
