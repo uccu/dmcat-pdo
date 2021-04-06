@@ -4,7 +4,7 @@ namespace Uccu\DmcatPdo\Exception;
 
 use Exception;
 
-class ExcuteFailException extends Exception
+class MysqlConnectException extends Exception
 {
     public $sql;
     function __construct()

@@ -2,6 +2,7 @@
 
 namespace Uccu\DmcatPdo;
 
+use Exception;
 use Uccu\DmcatPdo\Exception\StreamOpenFailException;
 
 class ModelConfig
@@ -23,10 +24,13 @@ class ModelConfig
         $fileName =  $fileName ?? 'mysql';
         $name = $name ?? 'default';
 
-        $path = self::$_CONFIG_ROOT . $fileName . '.json';
-        $file = @file_get_contents($path);
+        $file = @file_get_contents(self::$_CONFIG_ROOT . $fileName . '.json');
         if (!$file) {
-            throw new StreamOpenFailException;
+            try {
+                $file = json_encode(require_once(self::$_CONFIG_ROOT . $fileName . '.php'));
+            } catch (Exception $e) {
+                throw new StreamOpenFailException;
+            }
         }
 
         self::$_DATA = json_decode($file);
