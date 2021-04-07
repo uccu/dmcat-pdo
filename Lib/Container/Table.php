@@ -15,7 +15,7 @@ class Table
     function __construct($tableName, $asTable = null, $database = null)
     {
         $prefix = ModelConfig::config()->PREFIX;
-        if (!$database) $database = ModelConfig::config()->database;
+        if (!$database) $database = ModelConfig::config()->DATABASE;
         $this->tableName = $asTable ?? $tableName;
         $this->realTableName = $prefix . $tableName;
         $this->fullTableName = '`' . $database . '`.`' . $this->realTableName . '`';
